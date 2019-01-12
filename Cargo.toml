@@ -6,11 +6,14 @@ edition = "2018"
 
 [dependencies]
 rocket = "0.4.0"
-tera = "*"
-diesel = { version = "1.0.0", features = ["postgres"] }
 dotenv = "0.9.0"
+diesel = { version="*", features = ["postgres"]}
+tera = "*"
+serde = "*"
+serde_derive = "*"
+r2d2-diesel = "*"
+r2d2 = "*"
 
 [dependencies.rocket_contrib]
-version = "*"
-default-features = false
-features = ["tera_templates"]
+version = "0.4.0"
+features = ["tera_templates","diesel_postgres_pool"]

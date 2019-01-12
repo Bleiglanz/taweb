@@ -1,3 +1,7 @@
+.idea
+.idea/*
+taweb.iml
 /target
 **/*.rs.bk
 .env
+Rocket.toml
