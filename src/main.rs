@@ -33,13 +33,13 @@ fn index(pool:PgPool) -> Template {
     Template::render("index",&context)
 }
 
-#[get("/scope")]
+#[get("/scope.html")]
 fn scope() -> Template {
     let mut context = Context::new();
     Template::render("scope",&context)
 }
 
-#[get("/files")]              // <- route attribute
+#[get("/files.html")]              // <- route attribute
 fn files() -> Template {
     let mut context = Context::new();
     Template::render("files",&context)
