@@ -30,39 +30,18 @@ fn json(conn:PgPool, name: &RawStr) -> Json<Vec<models::Meldung>> {
     let meldungen:Vec<models::Meldung> = stmt.query(&[]).unwrap().iter().map(|r| { models::Meldung::from_row(r) }).collect();
     Json(meldungen)
 }
-#[get("/index.html")]
-fn index(conn:PgPool) -> Template {
-    let mut context = Context::new();
-
-    let stmt = conn.prepare("SELECT DISTINCT anlagen_system, count(*) FROM ex_ziw28 GROUP BY anlagen_system ORDER BY 1").unwrap();
-    let systems:Vec<models::System> = stmt.query(&[]).unwrap().iter().map(|r| {
-        models::System {
-            sysnr : r.get(0),
-            count : r.get(1),
-        }}).collect();
-
-    let stmt = conn.prepare("SELECT DISTINCT zusaetzl__bemerk_3, count(*) FROM ex_ziw28 GROUP BY zusaetzl__bemerk_3 ORDER BY 1").unwrap();
-    let terminplaene:Vec<models::Terminplan> = stmt.query(&[]).unwrap().iter().map(|r| {
-        models::Terminplan {
-            name  : r.get(0),
-            count : r.get(1),
-        }}).collect();
-
-    let stmt = conn.prepare("SELECT DISTINCT technische_identnummer, count(*) FROM ex_ziw28 GROUP BY technische_identnummer ORDER BY 1").unwrap();
-    let equipments:Vec<models::Equipment> = stmt.query(&[]).unwrap().iter().map(|r| {
-        models::Equipment {
-            strukturnr  : r.get(0),
-            count : r.get(1),
-        }}).collect();
-
+#[get("/json/<name>/header.js", format="json")]
+fn json_header(conn:PgPool, name: &RawStr) -> Json<Vec<String>> {
     let stmt = conn.prepare(models::Meldung::sql()).unwrap();
-    let meldungen:Vec<models::Meldung> = stmt.query(&[]).unwrap().iter().map(|r| { models::Meldung::from_row(r) }).collect();
+    let cols = stmt.columns();
+    let headers:Vec<String> = cols.iter().map(|c| { c.name().to_string() }).collect();
+    Json(headers)
+}
 
-    context.insert("systems",&systems);
-    context.insert("terminplaene", &terminplaene);
-    context.insert("equpments", &equipments);
-    context.insert( "meldungen",&meldungen);
-    context.insert( "meldungen_json", &serde_json::to_string(&meldungen).unwrap());
+
+#[get("/index.html")]
+fn index() -> Template {
+    let mut context = Context::new();
     Template::render("index",&context)
 }
 
@@ -83,5 +62,5 @@ fn main() {
     rocket::ignite().
         attach(Template::fairing()).
         attach(PgPool::fairing()).
-        mount("/", routes![default,json,index,scope,files]).launch();
+        mount("/", routes![default,json,index,scope,files,json_header]).launch();
 }

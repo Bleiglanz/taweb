@@ -9,43 +9,56 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
     <style>
     </style>
 
 </head>
 <body>
+<span id="app">
 {% include "navigation" %}
 <div class="container-fluid" style="margin-top:5px">
     {% block content %}
     {% endblock content %}
 </div>
+</span>
 <script>
-    var app;
-    app = new Vue({
+    var vm = new Vue({
         el: '#app',
         data: {
-            meldungen: [] // initialize empty array
+            sortKey: 'tanr',
+            reverse: false,
+            search: '',
+            columns: [],
+            meldungen: []
         },
-        mounted() { // when the Vue app is booted up, this is run automatically.
+        mounted(){ // when the Vue app is booted up, this is run automatically.
             var self = this; // create a closure to access component in the callback below
             $.getJSON('./json/meldungen/data.js', function (data) {
                 self.meldungen = data;
             });
+            $.getJSON('./json/meldungen/header.js', function (data) {
+                self.columns = data;
+            });
+        },
+        methods: {
+            sortBy: function(sortKey) {
+                this.reverse = (this.sortKey === sortKey) ? !this.reverse : false;
+                this.sortKey = sortKey;
+            }
+        },
+        computed: {
+            orderedMeldungen: function () {
+                var direction = this.reverse ? 'asc' : 'desc';
+                var rex = new RegExp(this.search, 'i');
+                var filtered = this.meldungen.filter(function(m){
+                    return rex.test(JSON.stringify(m));
+                })
+                return _.orderBy(filtered, this.sortKey, direction);
+            }
         }
     });
-
-    $(document).ready(function () {
-        (function ($) {
-            $('#filter').keyup(function () {
-                var rex = new RegExp($(this).val(), 'i');
-                var fil = $('tbody > tr');
-                fil.hide();
-                fil.filter(function () {
-                    return rex.test($(this).text());
-                }).show();
-            })
-        }(jQuery));
-    });
 </script>
+
 </body>
 </html>
