@@ -1,68 +1,86 @@
 {% extends "base" %}
 {% block content %}
 <div class="row">
-    <div class="col-sm-4">
+
+    <div class="col-sm-2">
         <h2>Systeme</h2>
-        <table class="table table-sm">
+        <table id="systeme" class="table table-sm">
             <thead class="thead-light">
             <tr>
-                <th>SYSNR</th>
-                <th>NAME</th>
+                <th onclick="sortTable('systeme',0)">SYSNR</th>
+                <th onclick="sortTable('systeme',1)">#</th>
             </tr>
             </thead>
             <tbody>
             {% for s in systems %}<tr>
                 <td>{{s.sysnr}}</td>
-                <td>{{s.descr}}</td>
+                <td>{{s.count}}</td>
             </tr>{% endfor %}
             </tbody>
         </table>
-        <ul class="nav nav-pills flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" href="#">Active</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-        </ul>
         <hr class="d-sm-none">
     </div>
-    <div class="col-sm-8">
-        <h1>This is our example blog application</h1>
-        <p>
-            Let's explore what we can do with
-            <a href="https://rocket.rs">Rocket</a> and
-            <a href="https://www.rust-lang.org">Rust</a>
-        </p>
-        <table>
+
+    <div class="col-sm-3">
+        <h2>Terminplaene</h2>
+        <table class="table table-sm">
+            <thead class="thead-light">
             <tr>
-                <td>foo</td>
+                <th>TERMINPLAN</th>
+                <th>#</th>
             </tr>
+            </thead>
+            <tbody>
+            {% for s in terminplaene %}<tr>
+                <td>{{s.name}}</td>
+                <td>{{s.count}}</td>
+            </tr>{% endfor %}
+            </tbody>
+        </table>
+        <hr class="d-sm-none">
+    </div>
+
+    <div class="col-sm-2">
+        <h2>Equipments</h2>
+        <table class="table table-sm">
+            <thead class="thead-light">
             <tr>
-                <td>goo</td>
+                <th>EQUIPMENT</th>
+                <th>#</th>
             </tr>
-            </table>
-                <h2>TITLE HEADING</h2>
-                <h5>Title description, Dec 7, 2017</h5>
-                <div class="fakeimg">Fake Image</div>
-                <p>Some text..</p>
-                <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                    exercitation ullamco.</p>
-                <br>
-                <h2>TITLE HEADING</h2>
-                <h5>Title description, Sep 2, 2017</h5>
-                <div class="fakeimg">Fake Image</div>
-                <p>Some text..</p>
-                <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                    exercitation ullamco.</p>
+            </thead>
+            <tbody>
+            {% for s in equpments %}<tr>
+                <td>{{s.strukturnr}}</td>
+                <td>{{s.count}}</td>
+            </tr>{% endfor %}
+            </tbody>
+        </table>
+        <hr class="d-sm-none">
+    </div>
+
+    <div class="col-sm-5" id="app">
+        <h2>Meldungen</h2>
+        <table id="meldungen" class="table table-sm">
+            <thead class="thead-light">
+            <tr>
+                <th onclick="sortTable('meldungen',0)">TANR</th>
+                <th>BESCHR</th>
+                <th>PLATZ</th>
+                <th>STATUS</th>
+            </tr>
+            </thead>
+            {% raw %}
+            <tbody v-for="s in meldungen">
+            <tr>
+                <td>{{s.tanr}}</td>
+                <td>{{s.beschreibung}}</td>
+                <td>{{s.platz}}</td>
+                <td>{{s.status}}</td>
+            </tr>{% endraw %}
+            </tbody>
+        </table>
+        <hr class="d-sm-none">
     </div>
 </div>
 {% endblock content %} 
