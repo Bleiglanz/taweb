@@ -33,7 +33,7 @@
             meldungen: []
         },
         mounted(){ // when the Vue app is booted up, this is run automatically.
-            var self = this; // create a closure to access component in the callback below
+            let self = this; // create a closure to access component in the callback below
             $.getJSON('./json/meldungen/data.js', function (data) {
                 self.meldungen = data;
             });
@@ -55,6 +55,9 @@
                     return rex.test(JSON.stringify(m));
                 });
                 return _.orderBy(filtered, this.sortKey, direction);
+            },
+            lengthOrderedMeldungen: function() {
+                return this.orderedMeldungen.length;
             }
         }
     });

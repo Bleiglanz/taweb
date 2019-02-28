@@ -1,4 +1,4 @@
-use serde_derive::{Serialize,Deserialize};
+use serde_derive::{Serialize, Deserialize};
 use postgres::rows::Row;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -37,17 +37,17 @@ order by m.turnaround_nr_
 
     pub fn from_row(row: Row) -> Meldung {
         Meldung {
-        sapnr: row.get(0),
-        status: row.get(1),
-        system: row.get(2),
-        tanr: row.get(3),
-        kurztext: row.get(4),
-        equipment: row.get(5),
-        frequenz: row.get(6),
-        terminplan: row.get(7),
-        pid: row.get(8),
-        datum: row.get(9),
-        platz: row.get(10)
+            sapnr: row.get(0),
+            status: row.get(1),
+            system: row.get(2),
+            tanr: row.get(3),
+            kurztext: row.get(4),
+            equipment: row.get(5),
+            frequenz: row.get(6),
+            terminplan: row.get(7),
+            pid: row.get(8),
+            datum: row.get(9),
+            platz: row.get(10),
         }
     }
 }
