@@ -1,0 +1,9 @@
+{% extends "base" %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Zahl</h1>
+        <p>{{zahl}} ct={{ct}}</p>
+    </div>
+</div>
+{% endblock content %} 

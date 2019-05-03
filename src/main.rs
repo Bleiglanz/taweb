@@ -1,6 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #[macro_use] extern crate rocket;
 #[macro_use] extern crate rocket_contrib;
+
 extern crate serde_derive;
 extern crate serde;
 extern crate taweb;
@@ -16,6 +17,7 @@ use rocket::http::RawStr;
 use tera::Context;
 use dotenv::dotenv;
 
+
 #[database("taweb")]
 struct PgPool(postgres::Connection);
 
@@ -24,12 +26,14 @@ fn default() -> Redirect {
     Redirect::to("/index.html")
 }
 
+
 #[get("/json/<name>/data.js", format="json")]
 fn json(conn:PgPool, name: &RawStr) -> Json<Vec<models::Meldung>> {
     let stmt = conn.prepare(models::Meldung::sql()).unwrap();
     let meldungen:Vec<models::Meldung> = stmt.query(&[]).unwrap().iter().map(|r| { models::Meldung::from_row(r) }).collect();
     Json(meldungen)
 }
+
 #[get("/json/<name>/header.js", format="json")]
 fn json_header(conn:PgPool, name: &RawStr) -> Json<Vec<String>> {
     let stmt = conn.prepare(models::Meldung::sql()).unwrap();
@@ -57,10 +61,23 @@ fn files() -> Template {
     Template::render("files",&context)
 }
 
+use rocket::http::Cookies;
+use rocket::http::ContentType;
+#[get("/world/<zahl1>/<zahl2>/<zahl3>")]              // <- route attribute
+fn world(zahl1:i64, zahl2:i64, zahl3:i64, guard:Cookies) -> Template {  // <- request handler
+    let mut context = Context::new();
+    let zahl = zahl1 + zahl2 + zahl3;
+    context.insert("zahl",&zahl);
+    //context.insert("ct",&ct.to_string());
+    Template::render("world",context)
+}
+
 fn main() {
     dotenv().ok();
     rocket::ignite().
         attach(Template::fairing()).
         attach(PgPool::fairing()).
-        mount("/", routes![default,json,index,scope,files,json_header]).launch();
+        mount("/", routes![default,json,index,scope,files,json_header]).
+        mount( "/internal",routes![world]).
+        launch();
 }
